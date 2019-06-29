@@ -7,8 +7,7 @@
 
 #define MQTT_HOST   "arbiter.vm.nurd.space"
 #define MQTT_PORT   1883
-
-#define TOPIC_GEIGER    "revspace/sensors/geiger"
+#define MQTT_TOPIC  "power/main/power"
 
 #define PIN_CLK D3
 #define PIN_DIO D4
@@ -34,14 +33,12 @@ static void mqtt_callback(const char *topic, uint8_t * payload, unsigned int len
 
 static bool mqtt_connect(void)
 {
-    bool ok = true;
-
-    ok = mqttClient.connected();
+    bool ok = mqttClient.connected();
     if (!ok) {
         ok = mqttClient.connect(esp_id);
         if (ok) {
             mqttClient.setCallback(mqtt_callback);
-            ok = mqttClient.subscribe("power/main/power");
+            ok = mqttClient.subscribe(MQTT_TOPIC);
         }
     }
 
@@ -84,11 +81,10 @@ void loop(void)
             brightness++;
         }
     }
-    // listen to mqtt
+    // keep connected to mqtt
     if (!mqtt_connect()) {
         Serial.println("Restarting...");
         ESP.restart();
     }
     mqttClient.loop();
 }
-
