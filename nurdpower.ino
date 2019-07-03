@@ -35,7 +35,7 @@ static bool mqtt_connect(const char *id, const char *topic)
 {
     bool ok = mqttClient.connected();
     if (!ok) {
-        ok = mqttClient.connect(esp_id);
+        ok = mqttClient.connect(id);
         if (ok) {
             ok = mqttClient.subscribe(topic);
         }
