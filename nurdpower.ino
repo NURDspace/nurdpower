@@ -31,14 +31,13 @@ static void mqtt_callback(const char *topic, uint8_t * payload, unsigned int len
     brightness = 0;
 }
 
-static bool mqtt_connect(void)
+static bool mqtt_connect(const char *id, const char *topic)
 {
     bool ok = mqttClient.connected();
     if (!ok) {
         ok = mqttClient.connect(esp_id);
         if (ok) {
-            mqttClient.setCallback(mqtt_callback);
-            ok = mqttClient.subscribe(MQTT_TOPIC);
+            ok = mqttClient.subscribe(topic);
         }
     }
 
@@ -82,7 +81,7 @@ void loop(void)
         }
     }
     // keep connected to mqtt
-    if (!mqtt_connect()) {
+    if (!mqtt_connect(esp_id, MQTT_TOPIC)) {
         Serial.println("Restarting...");
         ESP.restart();
     }
